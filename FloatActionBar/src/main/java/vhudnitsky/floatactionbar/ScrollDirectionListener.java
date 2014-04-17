@@ -7,4 +7,8 @@ public interface ScrollDirectionListener {
     void scrollToTop();
 
     void scrollToBottom();
+
+    void scrollToFirstElem();
+
+    void scrollFromFirstElem();
 }

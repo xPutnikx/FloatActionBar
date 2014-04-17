@@ -8,7 +8,7 @@ import vhudnitsky.floatactionbar.view.FloatActionListViewFrame;
 
 
 public class MainActivity extends Activity {
-    final String[] data = {"One","Two", "Three", "Four","Five"};
+    final String[] data = {"One","Two", "Three", "Four","Five", "SIx","One","Two", "Three", "Four","Five", "SIx","One","Two", "Three", "Four","Five", "SIx"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +19,6 @@ public class MainActivity extends Activity {
         ListView listView = view.getActualListView();
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,android.R.id.text1,data);
         listView.setAdapter(adapter);
-        listView.addHeaderView(getLayoutInflater().inflate(R.layout.header,null));
     }
 
 }

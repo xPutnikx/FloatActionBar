@@ -4,41 +4,40 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.Transformation;
-import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+
+import com.nineoldandroids.view.ViewPropertyAnimator;
+
 import vhudnitsky.floatactionbar.R;
 
 /**
  * Created by v.hudnitsky on 4/16/14.
  */
 public class FloatActionBar extends RelativeLayout {
-    private Animation hideAnimation;
-    private Animation showAnimation;
     private boolean hideIsEnded = true;
     private boolean showIsEnded = true;
     private boolean actionBarIsShowed = true;
+    private int rootHeight;
 
     public FloatActionBar(Context context) {
         super(context);
-        initAnimation();
+        calculateMeasureHeight();
     }
 
     public FloatActionBar(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initAnimation();
+        calculateMeasureHeight();
     }
 
     public FloatActionBar(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        initAnimation();
+        calculateMeasureHeight();
     }
 
     private void initCustomView(View view){
         RelativeLayout.LayoutParams params = initLayoutParams(view);
         this.addView(view, params);
-        initAnimation();
+        calculateMeasureHeight();
     }
 
     public void setCustomView(int layoutId){
@@ -59,78 +58,62 @@ public class FloatActionBar extends RelativeLayout {
         return params;
     }
 
-    private void initAnimation() {
+    private void calculateMeasureHeight() {
         measure(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        final int rootHeight = getMeasuredHeight();
-        final int defMargin = (int) getContext().getResources().getDimension(R.dimen.def_margin);
-
-        hideAnimation = new Animation() {
-            @Override
-            protected void applyTransformation(float interpolatedTime, Transformation t) {
-                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) getLayoutParams();
-                if ((params != null ? params.topMargin : 0) != -rootHeight) {
-                    params.topMargin = (int) (-rootHeight * interpolatedTime);
-                    setLayoutParams(params);
-                }
-            }
-        };
-        hideAnimation.setDuration(300);
-        hideAnimation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-                hideIsEnded = false;
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                hideIsEnded = true;
-                actionBarIsShowed = false;
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-        showAnimation = new Animation() {
-            @Override
-            protected void applyTransformation(float interpolatedTime, Transformation t) {
-                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) getLayoutParams();
-                if ((params != null ? params.topMargin : 0) != defMargin ) {
-                    params.topMargin = (int) (defMargin * interpolatedTime);
-                    setLayoutParams(params);
-                }
-            }
-        };
-        showAnimation.setDuration(500);
-        showAnimation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-                showIsEnded = false;
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                showIsEnded = true;
-                actionBarIsShowed = true;
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
+        rootHeight = getMeasuredHeight();
     }
 
     public void showAnimation(){
         if (showIsEnded && !actionBarIsShowed) {
-            startAnimation(showAnimation);
+            ViewPropertyAnimator.animate(this).setDuration(500).translationY(0).setListener(new com.nineoldandroids.animation.Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(com.nineoldandroids.animation.Animator animator) {
+                    showIsEnded = false;
+                }
+
+                @Override
+                public void onAnimationEnd(com.nineoldandroids.animation.Animator animator) {
+                    showIsEnded = true;
+                    actionBarIsShowed = true;
+                }
+
+                @Override
+                public void onAnimationCancel(com.nineoldandroids.animation.Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(com.nineoldandroids.animation.Animator animator) {
+
+                }
+            });
         }
     }
 
     public void hideAnimation(){
         if (hideIsEnded && actionBarIsShowed) {
-            startAnimation(hideAnimation);
+            ViewPropertyAnimator.animate(this).setDuration(500).translationY(-rootHeight).setListener(new com.nineoldandroids.animation.Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(com.nineoldandroids.animation.Animator animator) {
+                    hideIsEnded = false;
+                }
+
+                @Override
+                public void onAnimationEnd(com.nineoldandroids.animation.Animator animator) {
+                    hideIsEnded = true;
+                    actionBarIsShowed = false;
+                }
+
+                @Override
+                public void onAnimationCancel(com.nineoldandroids.animation.Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(com.nineoldandroids.animation.Animator animator) {
+
+                }
+            });
         }
     }
 }

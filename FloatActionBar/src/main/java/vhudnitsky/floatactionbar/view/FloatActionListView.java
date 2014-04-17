@@ -37,6 +37,12 @@ public class FloatActionListView extends ListView implements AbsListView.OnScrol
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
         if (scrollDirectionListener != null) {
+            if(firstVisibleItem == 0){
+                this.scrollDirectionListener.scrollToFirstElem();
+            }else{
+                this.scrollDirectionListener.scrollFromFirstElem();
+            }
+
             if (this.previousFirstVisibleItem > firstVisibleItem) {
                 scrollDirectionListener.scrollToTop();
             } else if (this.previousFirstVisibleItem < firstVisibleItem) {
@@ -49,4 +55,6 @@ public class FloatActionListView extends ListView implements AbsListView.OnScrol
     public void setScrollDirectionListener(ScrollDirectionListener scrollDirectionListener) {
         this.scrollDirectionListener = scrollDirectionListener;
     }
+
+
 }
